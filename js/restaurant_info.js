@@ -22,7 +22,7 @@ initMap = () => {
         scrollWheelZoom: false
       });
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-        mapboxToken: '<your MAPBOX API KEY HERE>',
+        mapboxToken: 'pk.eyJ1IjoibmluYWphY3F1ZXMiLCJhIjoiY2p3c2tjZXByMDJpODQzbnI2dmZzdXExaCJ9.7X-zz7pTUOah2yZkQFhFAA',
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -34,22 +34,6 @@ initMap = () => {
     }
   });
 }  
- 
-/* window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
-} */
 
 /**
  * Get current restaurant from page URL.
@@ -89,6 +73,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = `Photo of ${restaurant.name}`;
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -147,22 +132,34 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
  * Create review HTML and add it to the webpage.
  */
 createReviewHTML = (review) => {
+  const divHeader = document.createElement('div');
+  divHeader.classList.add('card-header');
+  const divBody = document.createElement('div');
+  divBody.classList.add('card-body');
   const li = document.createElement('li');
-  const name = document.createElement('p');
-  name.innerHTML = review.name;
-  li.appendChild(name);
 
-  const date = document.createElement('p');
+  const name = document.createElement('h3');
+  name.innerHTML = review.name;
+
+  const date = document.createElement('span');
   date.innerHTML = review.date;
-  li.appendChild(date);
+
+  divHeader.appendChild(name);
+  divHeader.appendChild(date);
+
+  li.appendChild(divHeader);
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
-  li.appendChild(rating);
+  rating.classList.add('rating');
 
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
-  li.appendChild(comments);
+
+  divBody.appendChild(rating);
+  divBody.appendChild(comments);
+
+  li.appendChild(divBody);
 
   return li;
 }
